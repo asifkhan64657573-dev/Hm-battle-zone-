@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background-color: #090d16; color: white; padding: 15px; }
+        .box { background: #1e293b; padding: 20px; border-radius: 8px; max-width: 600px; margin: 15px auto; }
+        input, button { width: 100%; padding: 10px; margin-top: 10px; border-radius: 5px; border: none; }
+        input { background: #334155; color: white; }
+        button { background: #10b981; color: white; font-weight: bold; cursor: pointer; }
+        .danger-btn { background: #ef4444; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
+        th, td { border: 1px solid #334155; padding: 8px; text-align: left; }
+        th { background: #334155; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <!-- Login Box -->
+    <div id="loginBox" class="box">
+        <h2>🔒 Admin Login</h2>
+        <input type="password" id="adminPassInput" placeholder="Enter Password (Default: 1234)">
+        <button onclick="checkPassword()">Login</button>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard" class="box hidden">
+        <h2>⚡ Owner Dashboard</h2>
+        <br>
+        
+        <!-- Password Change Section -->
+        <div style="background: #0f172a; padding: 10px; border-radius: 5px;">
+            <h4>🔑 Change Admin Password</h4>
+            <input type="password" id="newPassInput" placeholder="Enter New Password">
+            <button onclick="changePassword()" style="background: #3b82f6;">Update Password</button>
+        </div>
+
+        <br><hr><br>
+
+        <!-- Registered Players List -->
+        <h3>📋 Registered Players</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>UID</th>
+                    <th>Phone</th>
+                    <th>Method</th>
+                    <th>Trx ID</th>
+                </tr>
+            </thead>
+            <tbody id="playerTable"></tbody>
+        </table>
+
+        <br>
+        <button class="danger-btn" onclick="clearData()">Clear All Registered Data</button>
+        <button onclick="logout()" style="background: #64748b; margin-top: 5px;">Logout</button>
+    </div>
+
+    <script>
+        // Default password '1234' agar pehle se set na ho
+        if (!localStorage.getItem('admin_password')) {
+            localStorage.setItem('admin_password', '1234');
+        }
+
+        function checkPassword() {
+            let pass = document.getElementById('adminPassInput').value;
+            let currentPass = localStorage.getItem('admin_password');
+            if (pass === currentPass) {
+                document.getElementById('loginBox').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+                loadPlayerData();
+            } else {
+                alert("❌ Wrong Password!");
+            }
+        }
+
+        function changePassword() {
+            let newPass = document.getElementById('newPassInput').value;
+            if (newPass.length < 4) {
+                alert("Password kam se kam 4 characters ka hona chahiye!");
+                return;
+            }
+            localStorage.setItem('admin_password', newPass);
+            alert("✅ Password Successfully Changed! Naya Password: " + newPass);
+            document.getElementById('newPassInput').value = '';
+        }
+
+        function loadPlayerData() {
+            let data = JSON.parse(localStorage.getItem('ff_registrations') || '[]');
+            let tbody = document.getElementById('playerTable');
+            tbody.innerHTML = '';
+            
+            data.forEach(player => {
+                let row = `<tr>
+                    <td>${player.name}</td>
+                    <td>${player.uid}</td>
+                    <td>${player.phone}</td>
+                    <td>${player.payment}</td>
+                    <td>${player.trx}</td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function clearData() {
+            if (confirm("Kya aap saara registration data delete karna chahte hain?")) {
+                localStorage.removeItem('ff_registrations');
+                loadPlayerData();
+            }
+        }
+
+        function logout() {
+            location.reload();
+        }
+    </script>
+</body>
+</html>

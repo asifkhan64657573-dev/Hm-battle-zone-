@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Fire Tournament App</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background-color: #0f172a; color: white; padding: 15px; }
+        .header { background: linear-gradient(45deg, #ff4500, #ff8c00); padding: 20px; text-align: center; border-radius: 10px; font-weight: bold; font-size: 20px; }
+        .card { background: #1e293b; padding: 20px; border-radius: 10px; margin-top: 15px; border: 1px solid #ff4500; }
+        .info-row { display: flex; justify-content: space-between; margin: 10px 0; background: #334155; padding: 10px; border-radius: 5px; }
+        input, select, button { width: 100%; padding: 12px; margin-top: 10px; border-radius: 6px; border: none; font-size: 16px; }
+        input, select { background: #334155; color: white; }
+        button { background: #ff4500; color: white; font-weight: bold; cursor: pointer; }
+        .admin-link { display: block; text-align: center; margin-top: 20px; color: #94a3b8; text-decoration: none; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">🔥 FREE FIRE TOURNAMENT APP 🔥</div>
+
+    <div class="card">
+        <h3>🏆 Next Match Details</h3>
+        <div class="info-row"><span>Entry Fee:</span><strong id="displayFee">Rs. 50</strong></div>
+        <div class="info-row"><span>Prize Pool:</span><strong id="displayPrize">Rs. 500</strong></div>
+        <div class="info-row"><span>Map & Mode:</span><strong id="displayMode">Bermuda Solo</strong></div>
+        <div class="info-row"><span>Time:</span><strong id="displayTime">8:00 PM Today</strong></div>
+    </div>
+
+    <div class="card">
+        <h3>📝 Player Registration</h3>
+        <form id="userRegForm">
+            <input type="text" id="pName" placeholder="In-Game Name" required>
+            <input type="number" id="pUid" placeholder="Free Fire UID (10 Digits)" required>
+            <input type="text" id="pPhone" placeholder="WhatsApp Number" required>
+            <select id="pPayment" required>
+                <option value="">Select Payment Method</option>
+                <option value="EasyPaisa">EasyPaisa</option>
+                <option value="JazzCash">JazzCash</option>
+            </select>
+            <input type="text" id="pTrx" placeholder="Transaction ID (TID)" required>
+            <button type="submit">Submit Registration</button>
+        </form>
+    </div>
+
+    <a href="admin.html" class="admin-link">🔒 Admin Panel Login</a>
+
+    <script>
+        // Save user registration data locally
+        document.getElementById('userRegForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let newReg = {
+                name: document.getElementById('pName').value,
+                uid: document.getElementById('pUid').value,
+                phone: document.getElementById('pPhone').value,
+                payment: document.getElementById('pPayment').value,
+                trx: document.getElementById('pTrx').value,
+                date: new Date().toLocaleString()
+            };
+
+            let registrations = JSON.parse(localStorage.getItem('ff_registrations') || '[]');
+            registrations.push(newReg);
+            localStorage.setItem('ff_registrations', JSON.stringify(registrations));
+
+            alert("✅ Registration Submitted Successfully!");
+            this.reset();
+        });
+    </script>
+</body>
+</html>
